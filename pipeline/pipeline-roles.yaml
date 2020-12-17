@@ -66,28 +66,16 @@ Resources:
         - Action: ["s3:PutObject"]
           Resource: ["arn:aws:s3:::codepipeline*"]
           Effect: Allow
-        - Action: ["lambda:*"]
-          Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
-          Effect: Allow
-        - Action: ["sqs:*"]
-          Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*"
-          Effect: Allow
-        - Action: ["sns:*"]
-          Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:*"
-          Effect: Allow
         - Action: ["apigateway:*"]
           Resource: !Sub "arn:aws:apigateway:${AWS::Region}::*"
           Effect: Allow
-        - Action: ["cloudwatch:*", "s3:*", "sns:*", "cloudformation:*", "rds:*", "sqs:*", "events:DescribeRule", "events:PutRule"]
+        - Action: ["cloudwatch:*", "s3:*", "sns:*", "cloudformation:*", "rds:*", "sqs:*", "lambda:*", "events:*"]
           Resource: "*"
-          Effect: Allow
-        - Action: ["iam:GetRole", "iam:CreateRole", "iam:DeleteRole"]
-          Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AppName}-*"
           Effect: Allow
         - Action: ["iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:GetRolePolicy", "iam:PutRolePolicy", "iam:DeleteRolePolicy"]
           Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AppName}-*"
           Effect: Allow
-        - Action: ["iam:PassRole"]
+        - Action: ["iam:GetRole", "iam:CreateRole", "iam:DeleteRole", "iam:PassRole"]
           Resource: ["*"]
           Effect: Allow
         - Action: ["cloudformation:CreateChangeSet"]
