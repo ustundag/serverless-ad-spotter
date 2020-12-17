@@ -4,6 +4,7 @@ Parameters:
   AppName:
     Type: String
     Description: Name of the application.
+    Default: edsipota
     MinLength: "1"
     MaxLength: "80"
     AllowedPattern: "[A-Za-z0-9-]+"
@@ -27,6 +28,7 @@ Parameters:
   GitHubRepoName:
     Type: String
     Description: The GitHub repo name
+    Default: serverless-ad-spotter
   GitHubRepoBranch:
     Type: String
     Description: The GitHub repo branch code pipelines should watch for changes on
@@ -34,6 +36,7 @@ Parameters:
   GitHubUser:
     Type: String
     Description: GitHub UserName. This username must have access to the GitHubToken.
+    Default: ustundag
   GitHubToken:
     NoEcho: true
     Type: String
