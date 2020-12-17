@@ -1,6 +1,8 @@
 # AWS deployment related confidential files
 *.toml
 test/
+email_notification_html/
+dummy/
 
 # Local outputs
 .DS_Store
