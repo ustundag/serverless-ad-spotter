@@ -38,7 +38,7 @@ Resources:
           Action: ["kms:GenerateDataKey*", "kms:Encrypt", "kms:Decrypt"]
         - Effect: Allow
           Resource: ["*"]
-          Action: ["sns:SendMessage"]
+          Action: ["sns:SendMessage", "sns:Publish"]
       Roles: [!Ref CodeBuildTrustRole]
   CloudFormationTrustRole:
     Description: Creating service role in IAM for AWS CloudFormation
@@ -69,8 +69,17 @@ Resources:
         - Action: ["lambda:*"]
           Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*"
           Effect: Allow
+        - Action: ["sqs:*"]
+          Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*"
+          Effect: Allow
+        - Action: ["sns:*"]
+          Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:*"
+          Effect: Allow
         - Action: ["apigateway:*"]
           Resource: !Sub "arn:aws:apigateway:${AWS::Region}::*"
+          Effect: Allow
+        - Action: ["cloudwatch:*", "s3:*", "sns:*", "cloudformation:*", "rds:*", "sqs:*"]
+          Resource: "*"
           Effect: Allow
         - Action: ["iam:GetRole", "iam:CreateRole", "iam:DeleteRole"]
           Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/${AppName}-*"
