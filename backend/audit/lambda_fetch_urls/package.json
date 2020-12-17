@@ -1,0 +1,14 @@
+{
+  "name": "lambda_fetch_urls",
+  "version": "1.0.0",
+  "description": "Fetches URLs based on poll type and sends SQS using SNS hostname filters.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/ustundag",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^2.2.5"
+  }
+}

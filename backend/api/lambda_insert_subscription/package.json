@@ -1,0 +1,14 @@
+{
+  "name": "lambda_insert_subscription",
+  "version": "1.0.0",
+  "description": "Polls the SQS messages and insert subscription data to RDS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/ustundag",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^2.2.5"
+  }
+}

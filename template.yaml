@@ -1,0 +1,346 @@
+Transform: 'AWS::Serverless-2016-10-31'
+Globals:
+  Function:
+    MemorySize: 128
+    Timeout: 30
+    Handler: index.handler
+    Runtime: nodejs12.x
+
+Parameters:
+  envAccessKeyId:
+    Description: "AWS access key id."
+    Type: "String"
+    Default: "*"
+  envSecretAccessKey:
+    Description: "AWS secret access key"
+    Type: "String"
+    Default: "*"
+  envRegion:
+    Description: "The region where the serverless infra runs."
+    Type: "String"
+    Default: "*"
+  envEndpoint:
+    Description: "The db endpoint url."
+    Type: "String"
+    Default: "*"
+  envDatabase:
+    Description: "The db name."
+    Type: "String"
+    Default: "*"
+  envPassword:
+    Description: "The db password."
+    Type: "String"
+    Default: "*"
+  envPort:
+    Description: "The db port."
+    Type: "String"
+    Default: "*"
+  envUser:
+    Description: "The db user."
+    Type: "String"
+    Default: "*"
+  enableSqsPollingParam:
+    Description: "Enable SQS Polling for functions."
+    Type: "String"
+    Default: "False"
+    AllowedValues: ["True", "False"]
+
+Conditions:
+  enableSqsPollingCondition: !Equals [ !Ref enableSqsPollingParam, "True" ]
+
+Resources:
+# Create SNS Topic
+  snsTopicDistributeHostname:
+    Type: AWS::SNS::Topic
+
+# Create SQS Queues
+  sqsInsertSubscription:
+    Type: AWS::SQS::Queue
+  sqsDailyAds:
+    Type: AWS::SQS::Queue
+  sqsInsertAds:
+    Type: AWS::SQS::Queue
+  sqsNotifyDiff:
+    Type: AWS::SQS::Queue
+  sqsSahibinden:
+    Type: AWS::SQS::Queue
+  sqsHurriyetemlak:
+    Type: AWS::SQS::Queue
+
+# Create SNS Subscriptions
+  snsSubscriptionSahibinden:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      TopicArn: !Ref snsTopicDistributeHostname
+      Endpoint: !GetAtt 
+        - sqsSahibinden
+        - Arn
+      Protocol: sqs
+      RawMessageDelivery: 'true'
+      FilterPolicy:
+        hostname: 
+          - sahibinden.com
+  snsSubscriptionHurriyetemlak:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      TopicArn: !Ref snsTopicDistributeHostname
+      Endpoint: !GetAtt 
+        - sqsHurriyetemlak
+        - Arn
+      Protocol: sqs
+      RawMessageDelivery: 'true'
+      FilterPolicy:
+        hostname: 
+          - hurriyetemlak.com
+
+# Create SQS Policy to Enable SNS to Send Messages
+  sqsQueuePolicySns:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: queuePolicySns
+        Statement:
+          Sid: Allow-SNS-SendMessage
+          Effect: Allow
+          Principal: "*"
+          Action: sqs:SendMessage
+          Resource: "*"
+          Condition:
+            ArnEquals:
+              aws:SourceArn: !Ref snsTopicDistributeHostname
+      Queues:
+        - !Ref sqsSahibinden
+        - !Ref sqsHurriyetemlak
+
+# Create Lambda Functions for Api
+  lambda01CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/api/lambda_create_user/
+      # Description: Backend API 1 - Create user.
+      Environment:
+        Variables:
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+      Events:
+        apiEvent:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: POST
+  lambda02CreateSubscription:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/api/lambda_create_subscription/
+      # Description: Backend API 2 - Create subscription after validating subscription URL.
+      Environment:
+        Variables:
+          envRegion: !Ref envRegion
+          envAccessKeyId: !Ref envAccessKeyId
+          envSecretAccessKey: !Ref envSecretAccessKey
+          envSqsInsertSubscription: !Ref sqsInsertSubscription
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt sqsInsertSubscription.QueueName
+        - SESCrudPolicy:
+            IdentityName: "*"
+      Events:
+        apiEvent:
+          Type: Api
+          Properties:
+            Path: /subscription
+            Method: POST
+  lambda03InsertSubscription:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/api/lambda_insert_subscription/
+      # Description: Backend API 3 - Insert subscription.
+      Environment:
+        Variables:
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+      Policies:
+        - SQSPollerPolicy:
+            QueueName:
+              !GetAtt sqsInsertSubscription.QueueName
+      Events:
+        sqsInsertSubscriptionEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsInsertSubscription.Arn
+            BatchSize: 1
+            # Enabled: !If [ enableSqsPollingCondition, !Ref enableSqsPollingParam, !Ref 'AWS::NoValue' ]
+            Enabled: !If [ enableSqsPollingCondition, True, False ]
+
+# Create Lambda Functions for Audit
+  lambda10DeleteAds:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_delete_ads/
+      # Description: Audit 10 - Delete all daily ads at the end of day.
+      Environment:
+        Variables:
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+      Events:
+        eventBridgeDeleteEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(0 0 * * ? *)'
+            Name: eventBridgeDeleteEvent
+            Description: Audit 5 - Delete all daily ads at the end of day.
+            Enabled: False
+  lambda11FetchUrls:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_fetch_urls/
+      # Description: Audit 11 - Fetch URLs based on poll types
+      Environment:
+        Variables:
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+          envRegion: !Ref envRegion
+          envSnsTopicDistributeHostname: !Ref snsTopicDistributeHostname
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt snsTopicDistributeHostname.TopicName
+      Events:
+        eventBridgeFetchMorningEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(30 7 * * ? *)'
+            Name: eventBridgeFetchMorningEvent
+            Description: Audit 1 - Fetch URLs based on poll types
+            Enabled: False
+        eventBridgeFetchNoonEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(30 13 * * ? *)'
+            Name: eventBridgeFetchNoonEvent
+            Description: Audit 1 - Fetch URLs based on poll types
+            Enabled: False
+        eventBridgeFetchEveningEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 'cron(30 19 * * ? *)'
+            Name: eventBridgeFetchEveningEvent
+            Description: Audit 1 - Fetch URLs based on poll types
+            Enabled: False
+  lambda12ProcessUrlSahibinden:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_process_url_sahibinden/
+      # Description: Audit 12 - Scrape URLs to get daily ads.
+      MemorySize: 192
+      Environment:
+        Variables:
+          envRegion: !Ref envRegion
+          envAccessKeyId: !Ref envAccessKeyId
+          envSecretAccessKey: !Ref envSecretAccessKey
+          envSqsDailyAds: !Ref sqsDailyAds
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt sqsSahibinden.QueueName
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt sqsDailyAds.QueueName
+      Events:
+        sqsSahibindenEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsSahibinden.Arn
+            BatchSize: 1
+            Enabled: !If [ enableSqsPollingCondition, True, False ]
+  lambda13FindDiff:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_find_diff/
+      # Description: Audit 13 - Find diff between daily ads and storage.
+      Environment:
+        Variables:
+          envRegion: !Ref envRegion
+          envAccessKeyId: !Ref envAccessKeyId
+          envSecretAccessKey: !Ref envSecretAccessKey
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+          envSqsInsertAds: !Ref sqsInsertAds
+          envSqsNotifyDiff: !Ref sqsNotifyDiff
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt sqsDailyAds.QueueName
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt sqsInsertAds.QueueName
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt sqsNotifyDiff.QueueName
+      Events:
+        sqsDailyAdsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsDailyAds.Arn
+            BatchSize: 1
+            Enabled: !If [ enableSqsPollingCondition, True, False ]
+  lambda14InsertAds:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_insert_ads/
+      # Description: Audit 14 - Insert daily ads to storage.
+      Environment:
+        Variables:
+          envEndpoint: !Ref envEndpoint
+          envDatabase: !Ref envDatabase
+          envPassword: !Ref envPassword
+          envPort: !Ref envPort
+          envUser: !Ref envUser
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt sqsInsertAds.QueueName
+      Events:
+        sqsInsertAdsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsInsertAds.Arn
+            BatchSize: 1
+            Enabled: !If [ enableSqsPollingCondition, True, False ]
+  lambda15NotifyDiff:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/audit/lambda_notify_diff/
+      # Description: Audit 15 - Notify users by email for any diff.
+      Environment:
+        Variables:
+          envRegion: !Ref envRegion
+          envAccessKeyId: !Ref envAccessKeyId
+          envSecretAccessKey: !Ref envSecretAccessKey
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt sqsNotifyDiff.QueueName
+        - SESCrudPolicy:
+            IdentityName: "*"
+      Events:
+        sqsNotifyDiffEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsNotifyDiff.Arn
+            BatchSize: 1
+            Enabled: !If [ enableSqsPollingCondition, True, False ]
+
+Outputs:
+  outSqsPollingParam:
+    Description: The SQS Polling flag for lambda functions
+    Value: !If [ enableSqsPollingCondition, True, False ]
+

@@ -1,0 +1,16 @@
+{
+  "name": "lambda_process_url_sahibinden",
+  "version": "1.0.0",
+  "description": "Scrapes the webpage based on the hostname, sahibinden.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/ustundag",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "cheerio": "^1.0.0-rc.3",
+    "url": "^0.11.0"
+  }
+}

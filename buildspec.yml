@@ -1,0 +1,16 @@
+version: 0.0
+environment_variables:
+    plaintext:
+        "INPUT_FILE": "template.yaml"
+        "S3_BUCKET": ""
+containers:
+    LambdaFunctions:
+        phases:
+            during_build:
+                commands:
+                    - npm install
+                    - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
+        artifacts:
+            files:
+                - post-template.yaml
+                - beta.json

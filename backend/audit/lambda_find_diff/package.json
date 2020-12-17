@@ -1,0 +1,14 @@
+{
+  "name": "lambda_find_diff",
+  "version": "1.0.0",
+  "description": "Finds diff between incoming ads and storage, then sends SQS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/ustundag",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^2.2.5"
+  }
+}

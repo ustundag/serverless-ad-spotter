@@ -1,0 +1,15 @@
+{
+  "name": "lambda_create_subscription",
+  "version": "1.0.0",
+  "description": "Handles POST requests and validate the URL. Then sends lambda_insert_subscription function.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "github.com/ustundag",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "url": "^0.11.0"
+  }
+}

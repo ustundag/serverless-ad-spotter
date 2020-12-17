@@ -1,0 +1,12 @@
+{
+    "Parameters": {
+        "envRegion": "*",
+        "envAccessKeyId": "*",
+        "envSecretAccessKey": "*",
+        "envEndpoint": "*",
+        "envDatabase": "*",
+        "envPassword": "*",
+        "envPort": "*",
+        "envUser": "*",
+    }
+}
