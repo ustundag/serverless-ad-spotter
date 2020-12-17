@@ -22,8 +22,7 @@ Parameters:
     Default: beta.json
   CodeBuildImage:
     Type: String
-    # Default: "aws/codebuild/nodejs:12.0.0"
-    Default: "aws/codebuild/standard:2.0"
+    Default: "aws/codebuild/standard:3.0"
     Description: Image used for CodeBuild project.
   GitHubRepoName:
     Type: String
@@ -81,7 +80,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: !Sub "serverless-app-${AWS::AccountId}-${AWS::Region}-${AppName}"
+      BucketName: !Sub "edsipota-${AWS::AccountId}-${AWS::Region}-${AppName}"
       VersioningConfiguration:
         Status: Enabled
   S3ArtifactBucketPolicy:

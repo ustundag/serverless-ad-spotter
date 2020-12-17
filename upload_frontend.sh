@@ -2,8 +2,8 @@
 
 function usage {
      echo """
-     This script is to update the website components of the AWS Serverless Ad-Spotter to 
-     the S3 bucket created to host the website. To use, pass the S3 bucket name.
+     This script is to update the website components to the S3 bucket
+     created to host the website. To use, pass the S3 bucket name.
 
      ex:
      upload_frontend.sh s3-bucket-name
