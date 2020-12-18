@@ -22,7 +22,7 @@ Parameters:
     Default: beta.json
   CodeBuildImage:
     Type: String
-    Default: "aws/codebuild/standard:3.0"
+    Default: "aws/codebuild/standard:2.0"
     Description: Image used for CodeBuild project.
   GitHubRepoName:
     Type: String
