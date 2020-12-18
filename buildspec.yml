@@ -66,6 +66,7 @@ phases:
     #discard-paths: yes
     #file-format: JunitXml | CucumberJson
 artifacts:
+  type: zip
   files:
     - post-template.yaml
     - beta.json
