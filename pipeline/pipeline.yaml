@@ -51,6 +51,7 @@ Conditions:
   HasStagingVariables:
     !Not
       - !Equals [!Ref StagingFile, ""]
+
 Resources:
   CodeBuildProject:
     DependsOn: [S3Bucket]
@@ -80,7 +81,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: !Sub "edsipota-${AWS::AccountId}-${AWS::Region}-${AppName}"
+      BucketName: !Sub "serverless-app-${AWS::AccountId}-${AWS::Region}-${AppName}"
       VersioningConfiguration:
         Status: Enabled
   S3ArtifactBucketPolicy:
@@ -153,7 +154,7 @@ Resources:
             Provider: CloudFormation
           OutputArtifacts: []
           Configuration:
-            StackName: !Sub "${AppName}-stack"
+            StackName: !Sub "${AppName}-serverless-stack"
             ActionMode: CHANGE_SET_REPLACE
             RoleArn: !Ref CloudformationRole
             ChangeSetName: pipeline-changeset
@@ -170,7 +171,7 @@ Resources:
             Provider: CloudFormation
           OutputArtifacts: []
           Configuration:
-            StackName: !Sub "${AppName}-stack"
+            StackName: !Sub "${AppName}-serverless-stack"
             ActionMode: CHANGE_SET_EXECUTE
             ChangeSetName: pipeline-changeset
           RunOrder: 2
