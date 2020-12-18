@@ -24,3 +24,4 @@ find . -name ".DS_Store" -delete
 # upload files
 aws s3 cp ./pipeline/ "s3://$S3_BUCKET" --recursive
 
+
