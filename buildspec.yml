@@ -19,8 +19,15 @@
 version: 0.2
 env:
     git-credential-helper: yes
-    INPUT_FILE: "template.yaml"
-    S3_BUCKET: ""
+    variables:
+        INPUT_FILE: "template.yaml"
+        S3_BUCKET: ""
+    parameter-store:
+        INPUT_FILE: "template.yaml"
+        S3_BUCKET: ""
+    exported-variables:
+    - INPUT_FILE
+    - S3_BUCKET
 phases:
   install:
     runtime-versions:
@@ -32,6 +39,8 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+      - echo $INPUT_FILE
+      - echo $S3_BUCKET
       - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
 #   build:
 #     commands:
