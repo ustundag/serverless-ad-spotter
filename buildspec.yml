@@ -18,7 +18,9 @@
 # Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
 version: 0.2
 env:
-  git-credential-helper: yes
+    git-credential-helper: yes
+    INPUT_FILE: "template.yaml"
+    S3_BUCKET: ""
 phases:
   install:
     runtime-versions:
