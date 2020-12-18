@@ -1,3 +1,4 @@
+# ------------------------------------------
 # version: 0.0
 # environment_variables:
 #     plaintext:
@@ -15,46 +16,66 @@
 #                 - post-template.yaml
 #                 - beta.json
 
+# ------------------------------------------
 # Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
 version: 0.2
 env:
-    # git-credential-helper: yes
-    parameter-store:
-        S3_BUCKET: ""
-    exported-variables:
+  #variables:
+     # key: "value"
+     # key: "value"
+  parameter-store:
+    S3_BUCKET: ""
+  #secrets-manager:
+     # key: secret-id:json-key:version-stage:version-id
+     # key: secret-id:json-key:version-stage:version-id
+  exported-variables:
     - S3_BUCKET
+  #git-credential-helper: yes
+#batch:
+  #fast-fail: true
+  #build-list:
+  #build-matrix:
+  #build-graph:
 phases:
   install:
+    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.
+    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
     runtime-versions:
       nodejs: 12
     commands:
-      - echo Installing Mocha...
-      - npm install
+      - echo Setting runtime as Nodejs.12 ...
+  #pre_build:
+    #commands:
+      # - command
+      # - command
   build:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
-  build:
+  #post_build:
     commands:
       - echo $S3_BUCKET
       - aws cloudformation package --template-file template.yaml --s3-bucket serverless-app-768281180580-eu-central-1-edsi --output-template-file post-template.yaml
-#   build:
-#     commands:
-#       - echo Build started on `date`
-#       - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
-
-# Include only the files required for your application to run.
-# artifacts:
-#   files:
-#     - src/index.js
-#     - package.json
-#     - node_modules/**/*
+#reports:
+  #report-name-or-arn:
+    #files:
+      # - location
+      # - location
+    #base-directory: location
+    #discard-paths: yes
+    #file-format: JunitXml | CucumberJson
 artifacts:
-    files:
-        - post-template.yaml
-        - beta.json
+  files:
+    - post-template.yaml
+    - beta.json
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location
+#cache:
+  #paths:
+    # - paths
 
-
+# ------------------------------------------
 # version: 0.2
 # phases:
 #   install:
@@ -66,3 +87,5 @@ artifacts:
 # artifacts:
 #   files:
 #     - '**/*'
+
+# ------------------------------------------
