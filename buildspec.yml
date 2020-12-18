@@ -45,7 +45,8 @@ phases:
     commands:
       - echo ***** Setting runtime as Nodejs.12 ...
     #   - npm install
-      - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
+    #   - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
+      - find . -name package.json -not -path "*/node_modules/*" -exec bash -c "npm --prefix \$(dirname {}) install --production --no-audit" \;
   #pre_build:
     #commands:
       # - command
@@ -54,7 +55,8 @@ phases:
     commands:
       - echo ***** Installing source NPM dependencies...
     #   - npm install
-      - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
+    #   - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
+      - find . -name package.json -not -path "*/node_modules/*" -exec bash -c "npm --prefix \$(dirname {}) install --production --no-audit" \;
   post_build:
     commands:
       - echo ***** Packaging application resources...
