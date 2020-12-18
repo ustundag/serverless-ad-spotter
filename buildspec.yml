@@ -33,11 +33,15 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Compiling the Node.js code
-      - npm run build
+      - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
+
 # Include only the files required for your application to run.
+# artifacts:
+#   files:
+#     - src/index.js
+#     - package.json
+#     - node_modules/**/*
 artifacts:
-  files:
-    - src/index.js
-    - package.json
-    - node_modules/**/*
+    files:
+        - post-template.yaml
+        - beta.json
