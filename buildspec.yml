@@ -1,16 +1,39 @@
-version: 0.0
-environment_variables:
-    plaintext:
-        "INPUT_FILE": "template.yaml"
-        "S3_BUCKET": ""
-containers:
-    LambdaFunctions:
-        phases:
-            during_build:
-                commands:
-                    - npm install
-                    - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
-        artifacts:
-            files:
-                - post-template.yaml
-                - beta.json
+# version: 0.0
+# environment_variables:
+#     plaintext:
+#         "INPUT_FILE": "template.yaml"
+#         "S3_BUCKET": ""
+# containers:
+#     LambdaFunctions:
+#         phases:
+#             during_build:
+#                 commands:
+#                     - npm install
+#                     - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
+#         artifacts:
+#             files:
+#                 - post-template.yaml
+#                 - beta.json
+# Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the dist folder
+      - npm run-script build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+# Include only the files required for your application to run.
+artifacts:
+  files:
+    - index.js
+    - dist/**/*
+    - request-map.js
+    - credentials.json
+    - node_modules/**/*
