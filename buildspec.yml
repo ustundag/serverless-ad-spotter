@@ -43,18 +43,19 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - echo Setting runtime as Nodejs.12 ...
+      - echo ***** Setting runtime as Nodejs.12 ...
   #pre_build:
     #commands:
       # - command
       # - command
   build:
     commands:
-      - echo Installing source NPM dependencies...
+      - echo ***** Installing source NPM dependencies...
       - npm install
-  #post_build:
+  post_build:
     commands:
-      - echo $S3_BUCKET
+      - echo ***** Packaging application resources...
+      - echo ***** $S3_BUCKET
       - aws cloudformation package --template-file template.yaml --s3-bucket serverless-app-768281180580-eu-central-1-edsi --output-template-file post-template.yaml
 #reports:
   #report-name-or-arn:
