@@ -1,59 +1,58 @@
-version: 0.0
-environment_variables:
-    plaintext:
-        "INPUT_FILE": "template.yaml"
-        "S3_BUCKET": ""
-containers:
-    LambdaFunctions:
-        phases:
-            during_build:
-                commands:
-                    - npm install
-                    - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
-        artifacts:
-            files:
-                - post-template.yaml
-                - beta.json
+# version: 0.0
+# environment_variables:
+#     plaintext:
+#         "INPUT_FILE": "template.yaml"
+#         "S3_BUCKET": ""
+# containers:
+#     LambdaFunctions:
+#         phases:
+#             during_build:
+#                 commands:
+#                     - npm install
+#                     - aws cloudformation package --template $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
+#         artifacts:
+#             files:
+#                 - post-template.yaml
+#                 - beta.json
 
-# # Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
-# version: 0.2
-# env:
-#     git-credential-helper: yes
-#     parameter-store:
-#         INPUT_FILE: "template.yaml"
-#         S3_BUCKET: ""
-#     exported-variables:
-#     - INPUT_FILE
-#     - S3_BUCKET
-# phases:
-#   install:
-#     runtime-versions:
-#       nodejs: 12
+# Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
+version: 0.2
+env:
+    # git-credential-helper: yes
+    parameter-store:
+        S3_BUCKET: ""
+    exported-variables:
+    - S3_BUCKET
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installing Mocha...
+      - npm install
+  build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo $S3_BUCKET
+      - aws cloudformation package --template-file template.yaml --s3-bucket serverless-app-768281180580-eu-central-1-edsi --output-template-file post-template.yaml
+#   build:
 #     commands:
-#       - echo Installing Mocha...
-#       - npm install
-#   pre_build:
-#     commands:
-#       - echo Installing source NPM dependencies...
-#       - npm install
-#       - echo $INPUT_FILE
-#       - echo $S3_BUCKET
+#       - echo Build started on `date`
 #       - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
-# #   build:
-# #     commands:
-# #       - echo Build started on `date`
-# #       - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
 
-# # Include only the files required for your application to run.
-# # artifacts:
-# #   files:
-# #     - src/index.js
-# #     - package.json
-# #     - node_modules/**/*
+# Include only the files required for your application to run.
 # artifacts:
-#     files:
-#         - post-template.yaml
-#         - beta.json
+#   files:
+#     - src/index.js
+#     - package.json
+#     - node_modules/**/*
+artifacts:
+    files:
+        - post-template.yaml
+        - beta.json
 
 
 # version: 0.2
