@@ -61,7 +61,7 @@ phases:
     commands:
       - echo ***** Packaging application resources...
       - echo ***** $S3_BUCKET
-      - aws cloudformation package --template-file template.yaml --s3-bucket serverless-app-768281180580-eu-central-1-edsi --output-template-file post-template.yaml
+      - aws cloudformation package --template-file template.yaml --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
 #reports:
   #report-name-or-arn:
     #files:
