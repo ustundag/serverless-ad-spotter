@@ -19,9 +19,6 @@
 version: 0.2
 env:
     git-credential-helper: yes
-    variables:
-        INPUT_FILE: "template.yaml"
-        S3_BUCKET: ""
     parameter-store:
         INPUT_FILE: "template.yaml"
         S3_BUCKET: ""
