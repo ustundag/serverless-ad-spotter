@@ -67,7 +67,7 @@ async function sqsSendMessage(subscription){
   		MessageBody: JSON.stringify(subscription),
   		QueueUrl: sqs_queue
 	};
-    let response = getResponse(200, "İlan takip isteğiniz alınmıştır.", subscription)
+    let response = getResponse(200, "We got your request. Please check your mail box for e-mail verification!", subscription)
 	var sqs = new AWS.SQS();
     await sqs.sendMessage(params).promise().then(
         function(data) { console.log("*** sqs message sent!"); },

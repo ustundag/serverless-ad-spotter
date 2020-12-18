@@ -23,6 +23,6 @@ S3_BUCKET=''
 # delete hidden macos related file
 find . -name ".DS_Store" -delete
 # empty bucket
-aws s3 rm "s3://$S3_BUCKET" --recursive
+# aws s3 rm "s3://$S3_BUCKET" --recursive
 # upload files
 aws s3 cp ./frontend/ "s3://$S3_BUCKET" --recursive --exclude "*.yaml"

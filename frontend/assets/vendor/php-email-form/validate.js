@@ -182,7 +182,7 @@
 
   function addUser() {
       $('.user-id-response').empty();
-      const endpoint_user = "https://90vyjnxjgl.execute-api.eu-central-1.amazonaws.com/Prod/user"
+      const endpoint_user = "https://uczj1agmnk.execute-api.eu-central-1.amazonaws.com/Prod/user"
       var request = { }
       request.Name = $('#user-name').val().toString();
       request.Email = $('#user-email').val().toString();
@@ -200,7 +200,7 @@
 
   function addSubscription() {
       $('.subscription-response').empty();
-      const endpoint_subscription = "https://90vyjnxjgl.execute-api.eu-central-1.amazonaws.com/Prod/subscription"
+      const endpoint_subscription = "https://uczj1agmnk.execute-api.eu-central-1.amazonaws.com/Prod/subscription"
       var request = { }
       request.Title = $('#sub-title').val().toString();
       request.UserId = parseInt($('#sub-user-id').val().toString(), 10)
