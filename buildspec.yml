@@ -44,7 +44,8 @@ phases:
       nodejs: 12
     commands:
       - echo ***** Setting runtime as Nodejs.12 ...
-      - npm install
+    #   - npm install
+      - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
   #pre_build:
     #commands:
       # - command
@@ -52,12 +53,12 @@ phases:
   build:
     commands:
       - echo ***** Installing source NPM dependencies...
-      - npm install
+    #   - npm install
+      - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
   post_build:
     commands:
       - echo ***** Packaging application resources...
       - echo ***** $S3_BUCKET
-      - npm install
       - aws cloudformation package --template-file template.yaml --s3-bucket serverless-app-768281180580-eu-central-1-edsi --output-template-file post-template.yaml
 #reports:
   #report-name-or-arn:
@@ -91,5 +92,8 @@ artifacts:
 # artifacts:
 #   files:
 #     - '**/*'
+    # - index.js
+    # - package.json
+    # - node_modules/
 
 # ------------------------------------------
