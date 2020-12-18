@@ -35,7 +35,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template post-template.yaml
+      - aws cloudformation package --template-file $INPUT_FILE --s3-bucket $S3_BUCKET --output-template-file post-template.yaml
 
 # Include only the files required for your application to run.
 # artifacts:
