@@ -43,10 +43,10 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - echo ***** Setting runtime as Nodejs.12 ...
+      - echo ***** Setting runtime to Nodejs.12 ...
     #   - npm install
     #   - find . -maxdepth 1 -type d \( ! -name . \) -exec bash -c "cd '{}' && npm install" \;
-      - find . -name package.json -not -path "*/node_modules/*" -exec bash -c "npm --prefix \$(dirname {}) install --production --no-audit" \;
+    #   - find . -name package.json -not -path "*/node_modules/*" -exec bash -c "npm --prefix \$(dirname {}) install --production --no-audit" \;
   #pre_build:
     #commands:
       # - command
