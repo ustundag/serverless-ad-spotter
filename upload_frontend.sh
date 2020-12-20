@@ -70,13 +70,12 @@ done
 upload_changed_files=($(echo "${upload_changed_files[@]}" | tr ' ' '\n' | sort -u ))
 delete_changed_files=($(echo "${delete_changed_files[@]}" | tr ' ' '\n' | sort -u ))
 
-echo ""
-echo "------ print list start ---------"
 echo "------- upload list ---------"
 printf '%s\n' "${upload_changed_files[@]}"
 echo "------- delete list --------"
 printf '%s\n' "${delete_changed_files[@]}"
 echo "------ print list end ---------" 
+echo ""
 echo ""
 
 # empty bucket
@@ -86,8 +85,15 @@ echo ""
 # aws s3 cp ./frontend/ "s3://$S3_BUCKET" --recursive --exclude "*.yaml"
 # aws s3 cp ./pipeline/ "s3://$S3_BUCKET" --recursive
 
-# upload files
+# delete files from S3
+for index in "${!delete_changed_files[@]}"
+do
+    file=${delete_changed_files[index]#"${folder}/"}
+    aws s3 rm "s3://$S3_BUCKET/$file"
+done
+# upload files to S3
 for index in "${!upload_changed_files[@]}"
 do
-    echo "${upload_changed_files[index]}"
+    file=${upload_changed_files[index]#"${folder}/"}
+    aws s3 cp "$folder/$file" "s3://$S3_BUCKET/$file"
 done
