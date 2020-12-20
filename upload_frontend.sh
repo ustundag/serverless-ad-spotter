@@ -26,6 +26,8 @@ S3_BUCKET=''
 # delete hidden macos related files
 find . -name ".DS_Store" -delete
 
+# specify the folder
+folder="test_s3_script"
 # declare the arrays to add/delete changed files
 upload_changed_files=()
 delete_changed_files=()
@@ -50,7 +52,7 @@ function inspect_changed_files_in_commit {
 
     for index in "${!files_in_commit[@]}"
     do
-        if [[ ${files_in_commit[index]} == *"frontend/"* ]]; then
+        if [[ ${files_in_commit[index]} == *"${folder}/"* ]]; then
             fill_changed_file_list ${files_in_commit[index]}
         fi
     done
