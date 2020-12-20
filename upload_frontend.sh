@@ -2,11 +2,11 @@
 
 function usage {
     echo """
-    This script is updates the website components to the S3 bucket
-    created to host the website. Checking the file changes in 'frontend' folder,
-    it uploads/removes files based on unpushed commit info.
+    This script updates the website components in the S3 bucket which is
+    created to host the website. Checking the file changes in '${folder}' folder,
+    it uploads & removes files based on unpushed local git commits.
     
-    To get bette experience, please commit your changes, then pass the S3 bucket name.
+    To get better experience, please commit your changes, then pass the S3 bucket name.
 
     ex:
     upload_frontend.sh s3-bucket-name
@@ -14,6 +14,9 @@ function usage {
  }
 
 S3_BUCKET=''
+
+# specify the folder
+folder="frontend"
 
  # Get the table name
  if [ $# -eq 0 ]; then
@@ -26,8 +29,6 @@ S3_BUCKET=''
 # delete hidden macos related files
 find . -name ".DS_Store" -delete
 
-# specify the folder
-folder="test_s3_script"
 # declare the arrays to add/delete changed files
 upload_changed_files=()
 delete_changed_files=()
