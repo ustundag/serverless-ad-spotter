@@ -54,6 +54,8 @@ function parseHTML(html, today, subscriptionId){
             const ad_date = $(el).find('.searchResultsDateValue').find('span').text().replace(/\s/g, '');
             // TODO add comparison with Date(), this way is not appropriate, may create bugs!
             //if (!ad_date.includes(today)) { console.log(`ad_date: ${ad_date} is not today. ending iteration...`); return; }
+            if (typeof ad_date === undefined || ad_date == '') { return; }
+            // console.log(`today:${today} - ad_date: ${ad_date} - typeof ad_date: ${typeof ad_date}`)
             if (ad_date !== today) { 
                 //console.log(`ad_date: ${ad_date} is not today. ending iteration...`); 
                 return false; 
@@ -67,7 +69,7 @@ function parseHTML(html, today, subscriptionId){
                 AdUrl: ""
             };
             const ad_no = $(el).attr('data-id');
-            if (typeof ad_no === 'undefined' || ad_no == '') { return; }
+            if (typeof ad_no === undefined || ad_no == '') { return; }
             const a_element_first = $(el).find('.searchResultsTitleValue > a[href]').first();
             const ad_url = "https://www.sahibinden.com" + $(a_element_first).attr('href').toString();
             const ad_title = $(a_element_first).attr('title').toString();
