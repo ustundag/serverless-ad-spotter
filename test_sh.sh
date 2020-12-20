@@ -31,3 +31,4 @@ printf '%s\n' "${my_array[@]}"
 # if [[ $string == *"frontend"* ]]; then
 #   echo "It's there!"
 # fi
+ 

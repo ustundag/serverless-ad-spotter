@@ -4,7 +4,7 @@ Parameters:
   AppName:
     Type: String
     Description: Name of the application.
-    Default: edsipota
+    Default: edsipotter
     MinLength: "1"
     MaxLength: "80"
     AllowedPattern: "[A-Za-z0-9-]+"
