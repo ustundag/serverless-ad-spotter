@@ -44,7 +44,7 @@ function getHtmlContent(subscriptionName, subscriptionTitle, subscriptionDiff){
     `table td:last-child {border-bottom: 0;}} </style>`
     const head = `<head><title>Adspotter Notification</title>${style}</head>`
 
-    const intro = `<div> Merhaba ${subscriptionName}! <br/><br/>` +
+    const intro = `<div> Selam ${subscriptionName}! <br/><br/>` +
     `<b> ${subscriptionTitle} </b> başlıklı aramana ait <b> ${subscriptionDiff.length} yeni ilan </b> bulduk. ` +
     `İlanları aşağıdan inceleyebilirsin. Görüşmek üzere! </div><br/><br/>`
 
