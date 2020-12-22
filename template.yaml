@@ -42,7 +42,7 @@ Parameters:
   enableSqsPollingParam:
     Description: "Enable SQS Polling for functions."
     Type: "String"
-    Default: "True"
+    Default: "False"
     AllowedValues: ["True", "False"]
 
 Conditions:
